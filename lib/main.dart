@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:fast_contacts/fast_contacts.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(const MyApp());
@@ -58,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> requestContactPermission() async {
-    if (await FlutterContacts.requestPermission()) {
+    if (await Permission.contacts.request().isGranted) {
       retrieveContacts();
     } else {
       debugPrint('Contact permission denied');
@@ -66,10 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> retrieveContacts() async {
-    final retrieveContacts = await FlutterContacts.getContacts(
-      withProperties: true,
-      withPhoto: false,
-    );
+    final retrieveContacts = await FastContacts.getAllContacts();
     setState(() {
       contacts = retrieveContacts.take(10).toList();
     });
